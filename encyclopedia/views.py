@@ -26,18 +26,26 @@ def index(request):
     return render(request, "encyclopedia/index.html", {
         "entries": util.list_entries()
     })
+##def title(request, title_name):
+#   render(request, "encyclopedia/title.html",{
+#    "entry": util.get_entry(title_name),
+#    "title": util.get_page_name(title_name)
+#})
 
 def title(request, title):
-    info = util.get_entry(title,"True")
-    if info:
-        return render(request, "encyclopedia/entry.html", {
-            "title": title,
-            "info": info
-            })
-    else:
-        return render(request, "encyclopedia/404.html", {
-            "title": title
-            })
+   info = util.get_entry(title)
+   #if there is nothing return an error
+   if info is None:
+    return render(request, "encyclopedia/404.html",{
+            "form": form
+        })
+    return render(request, "encyclopedia/titlepage.html",{
+        'title': title,
+        'content': page,
+        "form": form
+
+    })
+      
 
 def randompage(request):
     entry = random.choice(util.list_entries()) #list of wikis
@@ -47,8 +55,8 @@ def randompage(request):
         "info":info
    })
 
-# def random_page(request):
-#    ventries = util.list_entries()
+#def random_page(request):
+    ventries = util.list_entries()
 #    selected_page = random.choice(entries)
 #    return HttpResponseRedirect(reverse('wiki', args=[selected_page]))
 
@@ -56,7 +64,7 @@ def search(request):
     search = request.GET.get('q')
     info = util.get_entry(search, "True")
     if info:
-        return render(request, "encyclopedia/entry.html", {
+        return render(request, "encyclopedia/results.html", {
             "title": search,
             "info": info
         })
